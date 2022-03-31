@@ -1,0 +1,2 @@
+# malsearcher
+myanimelist searcher

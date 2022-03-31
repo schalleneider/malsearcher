@@ -1,0 +1,23 @@
+{
+  "name": "malsearcher",
+  "version": "1.0.0",
+  "description": "myanimelist searcher",
+  "type": "module",
+  "exports": "./index.js",
+  "scripts": {
+    "start:seasons": "node index.js --mode=seasons --seasons='config/seasons.json'",
+    "start:details": "node index.js --mode=details --ids='config/ids.json'"
+  },
+  "author": "wschneider",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.12.0",
+    "exceljs": "^4.3.0",
+    "log4js": "^6.4.4",
+    "moment": "^2.29.1",
+    "yargs": "^17.4.0"
+  },
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}
