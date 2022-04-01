@@ -19,7 +19,7 @@ async function main() {
             break;
         
         case 'DETAILS':
-            await mainIds();
+            await mainDetails();
             break;
     
         default:
@@ -41,11 +41,15 @@ async function mainSeasons() {
     await template.saveSeasonWorksheet();
 }
 
-async function mainIds() {
-    Log.info(`loading ids config: [${argv.ids}]`);
+async function mainDetails() {
+    Log.info(`loading details config: [${argv.ids}]`);
 
     const ids = JSON.parse(fs.readFileSync(argv.ids));
     let animes = await MALFacade.getAnimeDetails(ids);
 
+    const template = new Template();
+    await template.loadDetailsWorksheet();
+    template.fillDetailsWorksheet(animes);
+    await template.saveDetailsWorksheet();
 }
 

@@ -102,14 +102,13 @@ class MALFacade {
             
             const id = ids[index];
 
-            Log.info(`searching anime details for: [${id}]`);
+            Log.info(`searching anime details for: [${id}] [${Math.round(100 * index / ids.length).toFixed(2)} % done]`);
 
             let auth = MALFacade.getAuth();
             let authHeader = JSON.parse(`{ "${auth.header}" : "${auth.value}" }`);
 
             let offset = 0;
             let limit = 100;
-            let lastPage = false;
 
             let baseURI = `https://api.myanimelist.net/v2/anime/${id}`;
 
@@ -136,6 +135,10 @@ class MALFacade {
                         endings: MALFacade.getAnimeThemes(data.ending_themes),
                     }
 
+                    if (anime.openings.length + anime.endings.length === 0) {
+                        Log.warn(`no themes were found for: [${id}]`)
+                    }
+
                     switch (anime.mediaType.toUpperCase()) {
                         case 'TV':
                         case 'OVA':
@@ -159,24 +162,41 @@ class MALFacade {
                     Log.fatal(error);
                 }
             }
+
+            await new Promise((resolve) => {
+                setTimeout(resolve, 500);
+            });
         }
+
+        return animes;
     }
 
     static getAnimeThemes(entries) {
-        const regex = /^((#*([0-9]*):*)(.+))( by )([^(\n]+)(\([\S ]+\))*$/;
+        if (entries === undefined) {
+            return [];
+        }
+        const regex = /^((#*([0-9]*):*)(.+))( by )([^(\n]+)(\([\S ]+\).?)*$/;
         let songs = [];
         for (let index = 0; index < entries.length; index++) {
             const current = entries[index];
             const match = regex.exec(current.text.trim());
-            const song = {
-                id : MALFacade.getThemeId(match[3]),
-                title : MALFacade.getThemeTitle(match[4].trim()),
-                artist : MALFacade.getThemeArtist(match[6].trim()),
-            };
-            songs.push(song);
-
-            //Log.debug(current.text);
-            Log.debug(JSON.stringify(song));
+            if (match) {
+                const song = {
+                    id : MALFacade.getThemeId(match[3]),
+                    title : MALFacade.getThemeTitle(match[4].trim()),
+                    artist : MALFacade.getThemeArtist(match[6].trim()),
+                };
+                songs.push(song);
+                Log.debug(JSON.stringify(song));
+            } else {
+                Log.warn(`no match: [${current.text.trim()}]`);
+                const song = {
+                    id : 'ERR',
+                    title : current.text.trim(),
+                    artist : '',
+                };
+                songs.push(song);
+            }
         }
         return songs;
     }

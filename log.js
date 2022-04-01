@@ -8,16 +8,18 @@ class Log {
             appenders: {
                 console: { type: 'stdout', layout: { type: 'coloured' } },
                 data: { type: 'file', filename: 'logs/data.txt', encoding: 'UTF-8' },
+                warns: { type: 'file', filename: 'logs/warns.txt', encoding: 'UTF-8' },
                 errors: { type: 'file', filename: 'logs/errors.txt', encoding: 'UTF-8' },
-                datafilter: { type: 'logLevelFilter', appender: 'data', level: 'debug', maxLevel: 'warn' },
+                datafilter: { type: 'logLevelFilter', appender: 'data', level: 'debug', maxLevel: 'info' },
+                warnsfilter: { type: 'logLevelFilter', appender: 'warns', level: 'warn', maxLevel: 'warn' },
                 errorsfilter: { type: 'logLevelFilter', appender: 'errors', level: 'error', maxLevel: 'fatal' }
             },
             categories: {
-                default: { appenders: [ 'console', 'datafilter', 'errorsfilter' ], level: 'debug' }
+                default: { appenders: [ 'console', 'datafilter', 'warnsfilter', 'errorsfilter' ], level: 'debug' }
             }
         });
 
-        this.logger = log4js.getLogger('ytlinksearcher');
+        this.logger = log4js.getLogger('malsearcher');
     }
 
     static get instance() {
