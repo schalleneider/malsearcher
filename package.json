@@ -5,6 +5,7 @@
   "type": "module",
   "exports": "./index.js",
   "scripts": {
+    "start": "node index.js",
     "start:seasons": "node index.js --mode=seasons --seasons='config/seasons.json'",
     "start:details": "node index.js --mode=details --ids='config/ids.json'"
   },
